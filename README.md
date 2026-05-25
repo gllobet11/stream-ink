@@ -66,38 +66,25 @@ Tools like [gInk](https://github.com/geovens/gInk) draw on a system-level overla
 
 ### Firefox / Waterfox
 
-Firefox uses Manifest V2 and requires its own manifest. A `manifest.firefox.json` is included — just swap it in before loading:
+A pre-built `.xpi` package is included at `dist/streamink-firefox.xpi` — no manifest swapping or command line needed.
 
-1. **Clone the repository**
+1. **Download / clone this repository**
 
    ```bash
    git clone https://github.com/gllobet11/stream-ink.git
-   cd stream-ink
    ```
 
-2. **Swap the Firefox manifest** (one-time setup):
+2. Open Firefox or Waterfox and navigate to `about:debugging`
 
-   ```bash
-   # Back up the Chrome manifest and activate the Firefox one
-   mv manifest.json manifest.chrome.json
-   cp manifest.firefox.json manifest.json
-   ```
+3. Click **This Firefox** → **Load Temporary Add-on…**
 
-   *(On Windows, use `rename` / `copy` instead of `mv` / `cp`.)*
+4. Select `dist/streamink-firefox.xpi` inside the `stream-ink` folder
 
-3. Open Firefox and navigate to `about:debugging`
+5. The StreamInk icon will appear in your toolbar — you're ready to go!
 
-4. Click **This Firefox** → **Load Temporary Add-on…**
+> **Note:** Temporary add-ons are removed when the browser restarts. You'll need to reload the `.xpi` each session, or [submit to AMO](https://addons.mozilla.org/developers/) for a permanently signed release.
 
-5. Select the `manifest.json` file inside the `stream-ink` folder
-
-6. The StreamInk icon will appear in the Firefox toolbar — you're ready to go!
-
-> **Waterfox:** Follow the exact same steps — Waterfox fully supports Firefox-style temporary add-ons.
-
-> **Permanent install:** Firefox requires extensions to be signed by Mozilla for permanent installation. Use the temporary add-on method above for development/personal use, or [submit to AMO](https://addons.mozilla.org/developers/) for a signed release.
-
-> **Restoring Chrome:** To switch back to Chrome, run `cp manifest.chrome.json manifest.json`.
+> **OBS tip:** If OBS shows a black window when capturing Waterfox, go to your Window Capture source settings and switch **Capture Method** from *Windows Graphics Capture* to *BitBlt*.
 
 ---
 
@@ -153,8 +140,9 @@ When draw mode is active you'll see:
 ### Option A — Window Capture
 
 1. In OBS, add a **Window Capture** source
-2. Select your Chrome window
+2. Select your browser window (Chrome, Waterfox, etc.)
 3. Press `Alt+D` on the browser page and draw — annotations appear on stream instantly
+4. If the window appears black in OBS (common with Firefox-based browsers), change **Capture Method** to **BitBlt** in the source settings
 
 ### Option B — Browser Source
 
@@ -174,7 +162,7 @@ Works too, but you'll capture your whole desktop. Use Window or Tab capture for 
 stream-ink/
 ├── manifest.json           # Chrome/Edge/Brave manifest (Manifest V3)
 ├── manifest.chrome.json    # Same as above — explicit copy for clarity
-├── manifest.firefox.json   # Firefox/Waterfox manifest (Manifest V2)
+├── manifest.firefox.json   # Firefox/Waterfox source manifest (Manifest V2)
 ├── background.js           # Background script — shared, auto-detects MV2/MV3 API
 ├── content.js              # Canvas overlay + full drawing engine — shared
 ├── overlay.css             # Styles for canvas, toolbar, indicator, eraser cursor
@@ -182,6 +170,8 @@ stream-ink/
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
+├── dist/
+│   └── streamink-firefox.xpi  # Pre-built package for Firefox/Waterfox
 ├── .gitignore
 ├── LICENSE
 └── README.md

@@ -1,9 +1,11 @@
 # StreamInk 🎨
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-brightgreen)
+![Chrome MV3](https://img.shields.io/badge/Chrome-Manifest%20V3-brightgreen)
+![Firefox MV2](https://img.shields.io/badge/Firefox%2FWaterfox-Manifest%20V2-orange)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
 ![Chrome](https://img.shields.io/badge/Chrome-compatible-4285F4?logo=googlechrome&logoColor=white)
+![Firefox](https://img.shields.io/badge/Firefox%2FWaterfox-compatible-FF7139?logo=firefox&logoColor=white)
 
 **Draw annotations on any webpage — fully visible in OBS window/tab capture.**
 
@@ -40,7 +42,9 @@ Tools like [gInk](https://github.com/geovens/gInk) draw on a system-level overla
 
 ## Installation
 
-> No build step required. Load the folder directly as an unpacked Chrome extension.
+> No build step required. Load the folder directly as an unpacked extension.
+
+### Chrome / Edge / Brave
 
 1. **Download / clone this repository**
 
@@ -54,9 +58,46 @@ Tools like [gInk](https://github.com/geovens/gInk) draw on a system-level overla
 
 4. Click **Load unpacked** and select the `stream-ink` folder (the one that contains `manifest.json`)
 
-5. The StreamInk icon will appear in your Chrome toolbar — you're ready to go!
+5. The StreamInk icon will appear in your toolbar — you're ready to go!
 
 > **Updating:** After pulling new changes, go to `chrome://extensions/` and click the 🔄 refresh icon on the StreamInk card.
+
+---
+
+### Firefox / Waterfox
+
+Firefox uses Manifest V2 and requires its own manifest. A `manifest.firefox.json` is included — just swap it in before loading:
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/gllobet11/stream-ink.git
+   cd stream-ink
+   ```
+
+2. **Swap the Firefox manifest** (one-time setup):
+
+   ```bash
+   # Back up the Chrome manifest and activate the Firefox one
+   mv manifest.json manifest.chrome.json
+   cp manifest.firefox.json manifest.json
+   ```
+
+   *(On Windows, use `rename` / `copy` instead of `mv` / `cp`.)*
+
+3. Open Firefox and navigate to `about:debugging`
+
+4. Click **This Firefox** → **Load Temporary Add-on…**
+
+5. Select the `manifest.json` file inside the `stream-ink` folder
+
+6. The StreamInk icon will appear in the Firefox toolbar — you're ready to go!
+
+> **Waterfox:** Follow the exact same steps — Waterfox fully supports Firefox-style temporary add-ons.
+
+> **Permanent install:** Firefox requires extensions to be signed by Mozilla for permanent installation. Use the temporary add-on method above for development/personal use, or [submit to AMO](https://addons.mozilla.org/developers/) for a signed release.
+
+> **Restoring Chrome:** To switch back to Chrome, run `cp manifest.chrome.json manifest.json`.
 
 ---
 
@@ -131,11 +172,13 @@ Works too, but you'll capture your whole desktop. Use Window or Tab capture for 
 
 ```
 stream-ink/
-├── manifest.json       # Extension manifest (Manifest V3)
-├── background.js       # Service worker — keyboard commands & icon click
-├── content.js          # Canvas overlay + full drawing engine
-├── overlay.css         # Styles for canvas, toolbar, indicator, eraser cursor
-├── icons/              # Extension icons (16 × 16, 48 × 48, 128 × 128)
+├── manifest.json           # Chrome/Edge/Brave manifest (Manifest V3)
+├── manifest.chrome.json    # Same as above — explicit copy for clarity
+├── manifest.firefox.json   # Firefox/Waterfox manifest (Manifest V2)
+├── background.js           # Background script — shared, auto-detects MV2/MV3 API
+├── content.js              # Canvas overlay + full drawing engine — shared
+├── overlay.css             # Styles for canvas, toolbar, indicator, eraser cursor
+├── icons/                  # Extension icons (16 × 16, 48 × 48, 128 × 128)
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
@@ -155,15 +198,18 @@ stream-ink/
 
 ## Browser Compatibility
 
-| Browser | Status |
-|---|---|
-| Chrome 88+ | ✅ Fully supported |
-| Edge (Chromium) 88+ | ✅ Fully supported |
-| Brave | ✅ Fully supported |
-| Firefox | ❌ Not supported (uses different extension API) |
-| Safari | ❌ Not supported |
+| Browser | Status | Manifest |
+|---|---|---|
+| Chrome 88+ | ✅ Fully supported | MV3 (`manifest.json`) |
+| Edge (Chromium) 88+ | ✅ Fully supported | MV3 (`manifest.json`) |
+| Brave | ✅ Fully supported | MV3 (`manifest.json`) |
+| Firefox 109+ | ✅ Fully supported | MV2 (`manifest.firefox.json`) |
+| Waterfox | ✅ Fully supported | MV2 (`manifest.firefox.json`) |
+| Safari | ❌ Not supported | — |
 
-Manifest V3 requires Chrome 88 or later.
+- **Chrome/Edge/Brave** load `manifest.json` (Manifest V3, `service_worker` background).
+- **Firefox/Waterfox** load `manifest.firefox.json` (Manifest V2, `background.scripts`, `browser_action`).
+- The `background.js` and `content.js` are **shared** — a runtime shim picks the right API (`browser.*` vs `chrome.*`) automatically.
 
 ---
 
@@ -176,7 +222,9 @@ Chrome restricts content scripts on `chrome://`, `chrome-extension://`, and the 
 The canvas is `position: fixed`, so it stays in place relative to the viewport. If the page scrolls, the drawings remain visually anchored to the window, not the page content. This is intentional for a streaming annotation overlay.
 
 **"The keyboard shortcut doesn't work."**
-Another extension may have claimed `Alt+D`. Go to `chrome://extensions/shortcuts` to remap StreamInk's shortcuts without conflicts.
+Another extension may have claimed `Alt+D`.
+- **Chrome/Edge/Brave:** Go to `chrome://extensions/shortcuts` to remap StreamInk's shortcuts.
+- **Firefox/Waterfox:** Go to `about:addons` → gear icon → **Manage Extension Shortcuts**.
 
 **"OBS isn't capturing the drawings."**
 Make sure you're using **Window Capture** pointed at the Chrome window (not the desktop), or a **Browser Source** pointed at the same URL. Display Capture works too but captures everything.

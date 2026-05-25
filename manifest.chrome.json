@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "StreamInk – Draw on Screen for Streaming",
+  "version": "1.0.0",
+  "description": "Draw annotations on any webpage. Visible in OBS window/tab capture.",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "commands": {
+    "toggle-draw": {
+      "suggested_key": {
+        "default": "Alt+D",
+        "windows": "Alt+D",
+        "mac": "Alt+D",
+        "linux": "Alt+D"
+      },
+      "description": "Toggle drawing mode"
+    },
+    "clear-canvas": {
+      "suggested_key": {
+        "default": "Alt+C"
+      },
+      "description": "Clear all drawings"
+    }
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "StreamInk – Toggle Drawing (Alt+D)"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

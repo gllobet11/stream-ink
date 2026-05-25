@@ -7,6 +7,9 @@
   // Prevent double-injection
   if (document.getElementById("streamink-canvas")) return;
 
+  // ===================== CROSS-BROWSER SHIM =====================
+  const api = typeof browser !== "undefined" ? browser : chrome;
+
   // ===================== STATE =====================
   const state = {
     active: false,
@@ -365,7 +368,7 @@
 
   // ===================== MESSAGES FROM BACKGROUND =====================
 
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === "toggle-draw") toggleActive();
     else if (msg.action === "clear-canvas") clearAll();
     sendResponse({ ok: true });

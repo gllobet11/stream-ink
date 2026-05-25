@@ -1,0 +1,21 @@
+# ── OS & editor ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Chrome extension packaging artifacts ─────────────────────
+*.crx
+*.pem
+*.zip
+key.pem
+
+# ── Node (in case tooling is added later) ────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*

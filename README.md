@@ -45,7 +45,7 @@ Tools like [gInk](https://github.com/geovens/gInk) draw on a system-level overla
 1. **Download / clone this repository**
 
    ```bash
-   git clone https://github.com/your-username/stream-ink.git
+   git clone https://github.com/gllobet11/stream-ink.git
    ```
 
 2. Open Chrome and navigate to `chrome://extensions/`

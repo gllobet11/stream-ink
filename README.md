@@ -235,6 +235,15 @@ Privacy policy: [PRIVACY.md](PRIVACY.md).
 
 ---
 
+## Publishing notes
+
+- **Firefox/Waterfox (AMO):** submit `dist/streamink-firefox.xpi` (rebuild it first, see Packaging). No source-code submission needed: no build step or minification. `web-ext lint` reports 0 errors; the two remaining warnings are about `data_collection_permissions` on Firefox < 140 / Android < 142 and are harmless (`strict_min_version` stays at 109 so Waterfox keeps working). Android is not targeted (needs desktop keyboard/mouse).
+- **Chrome / Edge:** upload `streamink-chrome.zip`. Chrome Web Store charges a one-time US$5 developer fee; Edge Add-ons is free.
+- **Reload gotcha:** after reloading the unpacked extension, just press `Alt+D` / click the icon on a normal `https://` page; the content script is injected on demand, no browser restart needed.
+- **Store listing:** mention that browsers block extensions on internal pages (`chrome://`, `about:`, store pages, PDF viewer).
+
+---
+
 ## Contributing
 
 Contributions, bug reports, and feature ideas are welcome!

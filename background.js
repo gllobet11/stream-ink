@@ -41,8 +41,16 @@ async function ensureContentScriptAndSend(tabId, message) {
       await api.tabs.sendMessage(tabId, message);
     } catch (injectErr) {
       console.warn("StreamInk: Cannot inject into this tab:", injectErr.message);
+      flashError();
     }
   }
+}
+
+// Visible feedback when a tab can't be drawn on (chrome:// pages, Web Store, PDF viewer...)
+function flashError() {
+  actionAPI.setBadgeText({ text: "!" });
+  actionAPI.setBadgeBackgroundColor({ color: "#ef4444" });
+  setTimeout(() => actionAPI.setBadgeText({ text: "" }), 2500);
 }
 
 // Get the active tab and send a command

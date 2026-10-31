@@ -64,13 +64,16 @@
   // --- Active indicator ---
   const indicator = document.createElement("div");
   indicator.id = "streamink-indicator";
-  indicator.innerHTML = '<span class="streamink-dot"></span> DRAW MODE';
+  const dot = document.createElement("span");
+  dot.className = "streamink-dot";
+  indicator.append(dot, " DRAW MODE");
   document.documentElement.appendChild(indicator);
 
   // --- Toolbar ---
   const toolbar = document.createElement("div");
   toolbar.id = "streamink-toolbar";
-  toolbar.innerHTML = buildToolbarHTML();
+  // DOMParser (not innerHTML): the template only holds extension-owned constants.
+  toolbar.append(...new DOMParser().parseFromString(buildToolbarHTML(), "text/html").body.children);
   document.documentElement.appendChild(toolbar);
 
   function buildToolbarHTML() {

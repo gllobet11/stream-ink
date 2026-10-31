@@ -4,8 +4,10 @@
 (() => {
   "use strict";
 
-  // Prevent double-injection
-  if (document.getElementById("streamink-canvas")) return;
+  // Replace leftovers from an orphaned script (extension reloaded/updated):
+  // its message listener is dead, so returning early left the page unresponsive.
+  // ponytail: old script's key listeners stay (harmless, they act on removed nodes).
+  document.querySelectorAll("[id^='streamink-']").forEach((el) => el.remove());
 
   // ===================== CROSS-BROWSER SHIM =====================
   const api = typeof browser !== "undefined" ? browser : chrome;
@@ -219,13 +221,15 @@
     redraw();
   });
 
-  canvas.addEventListener("pointerup", () => {
+  function endStroke() {
     if (!state.drawing || !state.currentStroke) return;
     state.drawing = false;
     state.strokes.push(state.currentStroke);
     state.currentStroke = null;
     redraw();
-  });
+  }
+  canvas.addEventListener("pointerup", endStroke);
+  canvas.addEventListener("pointercancel", endStroke);
 
   canvas.addEventListener("pointerleave", () => {
     eraserCursor.style.display = "none";
@@ -292,7 +296,16 @@
   }
 
   function drawFreehand(points) {
-    if (points.length < 2) return;
+    if (points.length < 2) {
+      // single click → dot
+      if (points.length === 1) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        ctx.lineTo(points[0].x + 0.01, points[0].y);
+        ctx.stroke();
+      }
+      return;
+    }
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
 
@@ -336,27 +349,26 @@
 
   // ===================== KEYBOARD SHORTCUTS =====================
 
-  document.addEventListener("keydown", (e) => {
-    if (!state.active) return;
+  const TOOL_KEYS = { p: "pen", l: "line", r: "rect", o: "circle", e: "eraser" };
 
-    // Tool shortcuts (only when draw mode is active)
-    if (e.key === "p" || e.key === "P") {
-      selectToolByKey("pen");
-    } else if (e.key === "l" || e.key === "L") {
-      selectToolByKey("line");
-    } else if (e.key === "r" || e.key === "R") {
-      selectToolByKey("rect");
-    } else if (e.key === "o" || e.key === "O") {
-      selectToolByKey("circle");
-    } else if (e.key === "e" || e.key === "E") {
-      selectToolByKey("eraser");
-    } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
+  // Capture phase + stopPropagation: while drawing, keys must not reach the page.
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (!state.active) return;
+      const key = e.key.toLowerCase();
+      const mod = e.ctrlKey || e.metaKey || e.altKey;
+
+      if (key === "z" && (e.ctrlKey || e.metaKey) && !e.altKey) undo();
+      else if (key === "escape") toggleActive();
+      else if (!mod && TOOL_KEYS[key]) selectToolByKey(TOOL_KEYS[key]);
+      else return;
+
       e.preventDefault();
-      undo();
-    } else if (e.key === "Escape") {
-      toggleActive();
-    }
-  });
+      e.stopPropagation();
+    },
+    true
+  );
 
   function selectToolByKey(tool) {
     state.tool = tool;

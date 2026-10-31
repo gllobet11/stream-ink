@@ -180,7 +180,7 @@ stream-ink/
 ### How it works
 
 1. `background.js` (service worker) listens for the keyboard shortcut (`Alt+D`) and toolbar icon clicks, then sends a message to the active tab.
-2. `content.js` is injected into every page at `document_idle`. It builds a `<canvas>` element appended directly to `<html>`, with `position: fixed` and the maximum possible `z-index` so it sits above all page content.
+2. `content.js` is injected on demand into the tab where you press `Alt+D` or click the icon (via `activeTab`, no access to other pages). It builds a `<canvas>` element appended directly to `<html>`, with `position: fixed` and the maximum possible `z-index` so it sits above all page content.
 3. Because the canvas is part of the page DOM (not a system overlay), OBS's window/tab capture sees it just like any other page element.
 4. `overlay.css` styles the toolbar and indicator with a scoped `#streamink-` prefix to avoid conflicts with page styles.
 
@@ -218,6 +218,20 @@ Another extension may have claimed `Alt+D`.
 
 **"OBS isn't capturing the drawings."**
 Make sure you're using **Window Capture** pointed at the Chrome window (not the desktop), or a **Browser Source** pointed at the same URL. Display Capture works too but captures everything.
+
+---
+
+## Packaging
+
+```bash
+# Chrome Web Store zip
+zip -r streamink-chrome.zip manifest.json background.js content.js overlay.css icons
+# Firefox .xpi (manifest renamed)
+mkdir -p /tmp/si && cp -r background.js content.js overlay.css icons /tmp/si && cp manifest.firefox.json /tmp/si/manifest.json
+(cd /tmp/si && zip -r - .) > dist/streamink-firefox.xpi
+```
+
+Privacy policy: [PRIVACY.md](PRIVACY.md).
 
 ---
 

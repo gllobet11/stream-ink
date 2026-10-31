@@ -3,7 +3,10 @@
   "name": "StreamInk – Draw on Screen for Streaming",
   "version": "1.0.0",
   "description": "Draw annotations on any webpage. Visible in OBS window/tab capture.",
-  "permissions": ["activeTab", "storage", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "commands": {
     "toggle-draw": {
       "suggested_key": {
@@ -32,17 +35,10 @@
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["overlay.css"],
-      "run_at": "document_idle"
-    }
-  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "homepage_url": "https://github.com/gllobet11/stream-ink"
 }

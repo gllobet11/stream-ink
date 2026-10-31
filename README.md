@@ -205,8 +205,8 @@ stream-ink/
 
 ## Troubleshooting
 
-**"The extension icon does nothing on some tabs."**
-Chrome restricts content scripts on `chrome://`, `chrome-extension://`, and the Chrome Web Store. This is a browser security policy — StreamInk can't be injected into those pages by design.
+**"The extension icon does nothing on some tabs" / red `!` on the icon.**
+Chrome blocks all extensions on `chrome://` pages (including the New Tab page and the extensions page), `chrome-extension://`, the Chrome Web Store and the built-in PDF viewer. StreamInk works on every normal `http://` / `https://` page; when a tab can't be drawn on, the icon flashes a red `!`. Local `file://` pages need **Allow access to file URLs** enabled in the extension's details.
 
 **"Drawings disappear when I scroll."**
 The canvas is `position: fixed`, so it stays in place relative to the viewport. If the page scrolls, the drawings remain visually anchored to the window, not the page content. This is intentional for a streaming annotation overlay.
